@@ -23,6 +23,26 @@ server.use(jsonServer.rewriter({
     '/blog/:resource/:id/show': '/:resource/:id'
 }))
 server.use(router)
+
+// server.use((req, res, next) => {
+//     if (req.path.startsWith("/categories") && db.categories?.data) {
+//       req.url = req.url.replace("/categories", "/categories_data");
+//     }
+//     if (req.path.startsWith("/meta") && db.categories?.meta) {
+//       req.url = req.url.replace("/meta", "/categories_meta");
+//     }
+//     next();
+//   });
+  
+  // Create a router with a new key
+  const transformedDb = {
+      categories_meta: db.categories?.meta || [],
+      categories_data: db.categories?.data || [],
+  };
+  
+  const routerTransformed = jsonServer.router(transformedDb);
+  server.use(routerTransformed);
+
 server.listen(3003, () => {
     console.log('JSON Server is running')
 })
